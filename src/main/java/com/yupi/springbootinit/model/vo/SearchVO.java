@@ -1,5 +1,6 @@
 package com.yupi.springbootinit.model.vo;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.springbootinit.model.entity.Picture;
 import lombok.Data;
 
@@ -14,11 +15,13 @@ import java.util.List;
 @Data
 public class SearchVO implements Serializable {
 
-    List<UserVO> userVOList;
+    List<UserVO> userList;
 
-    List<PostVO> postVOList;
+    List<PostVO> postList;
 
     List<Picture> pictureList;
+
+    List<Object> dataList;
 
     private static final long serialVersionUID = 1L;
 }

@@ -211,6 +211,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             List<SearchHit<PostEsDTO>> searchHitList = searchHits.getSearchHits();
             List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId())
                     .collect(Collectors.toList());
+            // Get full data from DB
             List<Post> postList = baseMapper.selectBatchIds(postIdList);
             if (postList != null) {
                 Map<Long, List<Post>> idPostMap = postList.stream().collect(Collectors.groupingBy(Post::getId));

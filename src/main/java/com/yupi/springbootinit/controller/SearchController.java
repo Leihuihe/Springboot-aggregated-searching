@@ -5,6 +5,7 @@ import com.yupi.springbootinit.common.BaseResponse;
 import com.yupi.springbootinit.common.ErrorCode;
 import com.yupi.springbootinit.common.ResultUtils;
 import com.yupi.springbootinit.exception.ThrowUtils;
+import com.yupi.springbootinit.manager.SearchFacade;
 import com.yupi.springbootinit.model.dto.picture.PictureQueryRequest;
 import com.yupi.springbootinit.model.dto.post.PostQueryRequest;
 import com.yupi.springbootinit.model.dto.search.SearchRequest;
@@ -46,53 +47,12 @@ public class SearchController {
     @Resource
     private PostService postService;
 
+    @Resource
+    private SearchFacade searchFacade;
 
     @PostMapping("/all")
-    public BaseResponse<SearchVO> searchAll(@RequestBody SearchRequest searchRequest,
-                                    HttpServletRequest request) {
-        String type = searchRequest.getType();
-        SearchTypeEnum searchTypeEnum = SearchTypeEnum.getEnumByValue(type);
-        ThrowUtils.throwIf(searchTypeEnum == null, ErrorCode.PARAMS_ERROR);
-        String searchText = searchRequest.getSearchText();
-        SearchVO searchVO = new SearchVO();
-        if(StringUtils.isBlank(type)) {
-            Page<Picture> picturePage = pictureService.searchPicture(searchText, 1, 10);
-            PostQueryRequest postQueryRequest = new PostQueryRequest();
-            postQueryRequest.setSearchText(searchText);
-            Page<PostVO> postVOPage = postService.listPostVOByPage(postQueryRequest, request);
-            UserQueryRequest userQueryRequest = new UserQueryRequest();
-            userQueryRequest.setUserName(searchText);
-            Page<UserVO> userVOPage = userService.listVOByPage(userQueryRequest);
-
-            searchVO.setPictureList(picturePage.getRecords());
-            searchVO.setUserVOList(userVOPage.getRecords());
-            searchVO.setPostVOList(postVOPage.getRecords());
-
-
-        } else {
-            switch (searchTypeEnum) {
-                case POST:
-                    PostQueryRequest postQueryRequest = new PostQueryRequest();
-                    postQueryRequest.setSearchText(searchText);
-                    Page<PostVO> postVOPage = postService.listPostVOByPage(postQueryRequest, request);
-                    searchVO.setPostVOList(postVOPage.getRecords());
-                    break;
-                case PICTURE:
-                    Page<Picture> picturePage = pictureService.searchPicture(searchText, 1, 10);
-                    searchVO.setPictureList(picturePage.getRecords());
-                    break;
-                case USER:
-                    UserQueryRequest userQueryRequest = new UserQueryRequest();
-                    userQueryRequest.setUserName(searchText);
-                    Page<UserVO> userVOPage = userService.listVOByPage(userQueryRequest);
-                    searchVO.setUserVOList(userVOPage.getRecords());
-                    break;
-                default:
-            }
-        }
-        return ResultUtils.success(searchVO);
-
-
+    public BaseResponse<SearchVO> searchAll(@RequestBody SearchRequest searchRequest, HttpServletRequest request) {
+        return ResultUtils.success(searchFacade.searchAll(searchRequest,request));
     }
 
 

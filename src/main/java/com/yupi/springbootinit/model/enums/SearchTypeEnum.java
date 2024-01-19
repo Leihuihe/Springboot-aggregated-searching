@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
  */
 public enum SearchTypeEnum {
 
-    POST("post", "user_avatar"),
-    PICTURE("picture", "user_avatar"),
-    USER("user", "user_avatar");
+    POST("post", "post"),
+    PICTURE("picture", "picture"),
+    USER("user", "user");
 
     private final String text;
 
