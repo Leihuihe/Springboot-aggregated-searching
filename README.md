@@ -14,56 +14,33 @@
 - Redis 
 - Elasticsearch 
 
-### 工具类
+### Utils
 
 - Easy Excel 
 - Hutool 
-- Gson 解析库
-- Apache Commons Lang3 工具类
+- Gson 
+- Apache Commons Lang3 
 - Lombok 
 
-### 业务特性
 
-- Spring Session Redis 分布式登录
-- 全局请求响应拦截器（记录日志）
-- 全局异常处理器
-- 自定义错误码
-- 封装通用响应类
-- Swagger + Knife4j 接口文档
-- 自定义权限注解 + 全局校验
-- 全局跨域处理
-- 长整数丢失精度解决
-- 多环境配置
+## Business features
 
+- Provide sample SQL (user, post, post likes, post favorites table)
+- User login, registration, logout, update, retrieval, permission management
+- Post creation, deletion, editing, updating, database retrieval, ES flexible retrieval
+- Like and unlike posts
+- Collection of posts, cancellation of collections, and retrieval of collected posts
+- Full post synchronization ES, incremental synchronization ES scheduled tasks
+- Support file upload by business
 
-## 业务功能
+### Unit testing
 
-- 提供示例 SQL（用户、帖子、帖子点赞、帖子收藏表）
-- 用户登录、注册、注销、更新、检索、权限管理
-- 帖子创建、删除、编辑、更新、数据库检索、ES 灵活检索
-- 帖子点赞、取消点赞
-- 帖子收藏、取消收藏、检索已收藏帖子
-- 帖子全量同步 ES、增量同步 ES 定时任务
-- 支持微信开放平台登录
-- 支持微信公众号订阅、收发消息、设置菜单
-- 支持分业务的文件上传
-
-### 单元测试
-
-- JUnit5 单元测试
-- 示例单元测试类
-
-### 架构设计
-
-- 合理分层
+- JUnit5
 
 
-## 快速上手
+### MySQL Database
 
-
-### MySQL 数据库
-
-1）修改 `application.yml` 的数据库配置为你自己的：
+1） `application.yml` 
 
 ```yml
 spring:
@@ -74,52 +51,15 @@ spring:
     password: 123456
 ```
 
-2）执行 `sql/create_table.sql` 中的数据库语句，自动创建库表
+2）run `sql/create_table.sql` for creating tables
 
-3）启动项目，访问 `http://localhost:8101/api/doc.html` 即可打开接口文档，不需要写前端就能在线调试接口了~
-
-![](doc/swagger.png)
-
-### Redis 分布式登录
-
-1）修改 `application.yml` 的 Redis 配置为你自己的：
-
-```yml
-spring:
-  redis:
-    database: 1
-    host: localhost
-    port: 6379
-    timeout: 5000
-    password: 123456
-```
-
-2）修改 `application.yml` 中的 session 存储方式：
-
-```yml
-spring:
-  session:
-    store-type: redis
-```
-
-3）移除 `MainApplication` 类开头 `@SpringBootApplication` 注解内的 exclude 参数：
-
-修改前：
-
-```java
-@SpringBootApplication(exclude = {RedisAutoConfiguration.class})
-```
-
-修改后：
+3）start `http://localhost:8101/api/doc.html` 
 
 
-```java
-@SpringBootApplication
-```
 
-### Elasticsearch 搜索引擎
+### Elasticsearch searching engine
 
-1）修改 `application.yml` 的 Elasticsearch 配置为你自己的：
+1）configure `application.yml` 
 
 ```yml
 spring:
@@ -129,22 +69,20 @@ spring:
     password: 123456
 ```
 
-2）复制 `sql/post_es_mapping.json` 文件中的内容，通过调用 Elasticsearch 的接口或者 Kibana Dev Tools 来创建索引（相当于数据库建表）
+2）Duplicate `sql/post_es_mapping.json` for using Elasticsearch API or Kibana Dev Tools to create index
 
 ```
 PUT post_v1
 {
- 参数见 sql/post_es_mapping.json 文件
+  sql/post_es_mapping.json 
 }
 ```
 
-这步不会操作的话需要补充下 Elasticsearch 的知识，或者自行百度一下~
+3）Start Elasticsearch and sync data with MySQL
 
-3）开启同步任务，将数据库的帖子同步到 Elasticsearch
-
-找到 job 目录下的 `FullSyncPostToEs` 和 `IncSyncPostToEs` 文件，取消掉 `@Component` 注解的注释，再次执行程序即可触发同步：
+Find `FullSyncPostToEs` and `IncSyncPostToEs` under job folder, remove comment for `@Component` 
 
 ```java
-// todo 取消注释开启任务
+// todo 
 //@Component
 ```
